@@ -1,24 +1,24 @@
-# Pokémon GO Plus + backup on an M5Stack Stick S3
+# Pokémon GO Plus+ backup on an M5Stack Stick S3
 
-This is firmware that lets an M5Stack Stick S3 stand in for a Pokémon GO Plus +
-that you own. I wanted a backup of my own Plus + that I can press to catch
+This is firmware that lets an M5Stack Stick S3 stand in for a Pokémon GO Plus+
+that you own. I wanted a backup of my own Plus+ that I can press to catch
 with, and that can also catch and spin by itself. The Stick S3 was the board I
 had on hand to try it on.
 
 It is a port of kiyoukan's
-[nRF52 Plus + backup firmware](https://github.com/kiyoukan/nRF52-go-plus-plus-backup-)
+[nRF52 Plus+ backup firmware](https://github.com/kiyoukan/nRF52-go-plus-plus-backup-)
 to the ESP32-S3. kiyoukan did the hard part, which is the pairing and
 reconnect protocol. I moved it onto NimBLE, added the catch and spin handling
 from [pgpemu](https://github.com/shortcuts/pgpemu), and gave it a status
 screen and a menu.
 
 There is no device material in this repo. The firmware only works with the
-Bluetooth address and the keys of a real Plus +, and you have to read those
+Bluetooth address and the keys of a real Plus+, and you have to read those
 from a device you own and put them in yourself. It won't compile without them.
 
 ## What it does
 
-- Pairs with Pokémon GO as a Plus + and reconnects like one
+- Pairs with Pokémon GO as a Plus+ and reconnects like one
 - Auto catch (everything, or only new Pokémon) and auto spin, each with its
   own switch
 - A manual catch or spin press on the front button
@@ -31,12 +31,12 @@ from a device you own and put them in yourself. It won't compile without them.
 ## Disclaimer
 
 This is a hobby project and there are probably rough edges. It is meant for
-backing up a Plus + you own, nothing else. I'm not affiliated with Nintendo,
+backing up a Plus+ you own, nothing else. I'm not affiliated with Nintendo,
 Niantic or The Pokémon Company. A device that plays for you may be against
 the game's terms of service, and if your account gets in trouble over it,
-that is on you. Getting the keys means opening your Plus + and reading a
+that is on you. Getting the keys means opening your Plus+ and reading a
 1.8 V flash chip, and if that kills it, that is on you too. I've only tested
-this on my own Stick S3, with the material from my own Plus +, on one iPhone
+this on my own Stick S3, with the material from my own Plus+, on one iPhone
 and one Android phone.
 
 The port and the documentation here were written with help from AI. If
@@ -47,18 +47,18 @@ something in the text doesn't match the code, trust the code and let me know.
 - An M5Stack Stick S3. It is the only board I've run this on. Everything
   board specific is in `pp_board.*`, so another ESP32 board would need its own
   version of that, and I haven't tried one.
-- Your own Plus +, and a way to read its 1.8 V flash chip (next section).
+- Your own Plus+, and a way to read its 1.8 V flash chip (next section).
 - A computer with `arduino-cli` and `esptool`. I use a Mac.
 
 ## Getting your device material
 
 ### Reading the flash chip
 
-The keys are in the Plus +'s external flash, a 1.8 V Macronix MX25U6433F in a
+The keys are in the Plus+'s external flash, a 1.8 V Macronix MX25U6433F in a
 WSON-8 package. I desoldered mine and read it with a CH341A programmer, a
 1.8 V adapter and a QFN8 to DIP8 socket (5 x 6 mm), using flashrom, which
 knows the chip as `MX25U6435E/F`. I read it twice and compared the two files
-before trusting it. Afterwards I soldered the chip back and my Plus + works
+before trusting it. Afterwards I soldered the chip back and my Plus+ works
 again.
 
 kiyoukan's README describes reading the chip in place with a spring needle
@@ -73,7 +73,7 @@ And keep the image on your own machine, it holds the keys of your device.
    `input` folder and run `python read_flash_data.py`.
 2. Open the `pp_device_material.generated.h` it writes.
 3. Fill in `PP_DEVICE_PUBLIC_ADDR_LE_BYTES` with the public Bluetooth address
-   of your Plus +, in little-endian order. That is backwards from how a
+   of your Plus+, in little-endian order. That is backwards from how a
    scanner shows it: `AA:BB:CC:DD:EE:FF` becomes
    `{ 0xFF, 0xEE, 0xDD, 0xCC, 0xBB, 0xAA }`.
 4. Set `PP_DEVICE_MATERIAL_CONFIGURED` to `1`.
@@ -81,12 +81,12 @@ And keep the image on your own machine, it holds the keys of your device.
 
 ### Getting the right address
 
-The address is not in the flash image. It lives in the Plus +'s
+The address is not in the flash image. It lives in the Plus+'s
 microcontroller, so you read it over the air with a Bluetooth scanner app
-while the Plus + is advertising.
+while the Plus+ is advertising.
 
-Make sure it is really yours. Every Plus + advertises the same name, and my
-first try used the address of a different Plus + that my phone had seen
+Make sure it is really yours. Every Plus+ advertises the same name, and my
+first try used the address of a different Plus+ that my phone had seen
 before. With the wrong address pairing fails partway, and it looks just like
 a firmware bug. A simple check is that the entry only shows up in the scanner
 while yours is awake.
@@ -147,14 +147,14 @@ and `Clone address check: MATCH` if that is the one from your header.
 
 ## Using it
 
-**Never have your real Plus + and the Stick switched on at the same time.**
+**Never have your real Plus+ and the Stick switched on at the same time.**
 They share one address, and that confuses the phone and anything else that
 is scanning. Put the real one away, asleep, while you use the Stick.
 
 Pair it in Pokémon GO under Settings > Connected Devices and Services >
-Accessory Devices, the same way as a real Plus +.
+Accessory Devices, the same way as a real Plus+.
 
-- If your phone has talked to the real Plus + before, it may still remember
+- If your phone has talked to the real Plus+ before, it may still remember
   that device's layout. My iPhone held on to it until I restarted the phone.
   If pairing stalls, restart the phone and try again.
 - "Enable Quick-Reconnect Mode" on that settings page makes the app try once
@@ -193,7 +193,7 @@ All settings are saved.
 
 ## What works and what I haven't checked
 
-Working, on my Stick S3 with my own Plus +'s material:
+Working, on my Stick S3 with my own Plus+'s material:
 
 - First pairing, auto catch and auto spin in Pokémon GO on an iPhone and on
   an Android phone
@@ -230,7 +230,7 @@ The changes are from November 2026:
 - Hooks for the board code and the catch engine, so the LED patterns the app
   sends go to the catch engine once the link is authenticated
 - The "paired" byte in the advertisement is `0x02` instead of `0x01`.
-  kiyoukan's notes and my real Plus + both show `02` for a paired device,
+  kiyoukan's notes and my real Plus+ both show `02` for a paired device,
   and with `01` the app would not reconnect by itself.
 - A small layer that stands in for the Adafruit nRF52 core, so the rest
   builds on the ESP32 unchanged
@@ -247,7 +247,7 @@ GNU AGPL v3.0, the same as kiyoukan's firmware that this is a port of. See
 ## Credits
 
 - [kiyoukan](https://github.com/kiyoukan/nRF52-go-plus-plus-backup-) for
-  working out the Plus + pairing and reconnect protocol and publishing the
+  working out the Plus+ pairing and reconnect protocol and publishing the
   nRF52 firmware this is ported from.
 - [shortcuts](https://github.com/shortcuts/pgpemu) for pgpemu, and yohanes,
   spezifisch and paper183 for the pgpemu work it builds on. The LED pattern
