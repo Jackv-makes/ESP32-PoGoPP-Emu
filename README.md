@@ -12,6 +12,11 @@ reconnect protocol. I moved it onto NimBLE, added the catch and spin handling
 from [pgpemu](https://github.com/shortcuts/pgpemu), and gave it a status
 screen and a menu.
 
+There is also an nRF52 version for Seeed's XIAO 1.47" touch display:
+[nRF52-PoGoPP-Emu](https://github.com/Jackv-makes/nRF52-PoGoPP-Emu). It runs
+on the same protocol code with a touch screen, and should last a lot longer
+on a battery than the Stick does. Its README has my estimates for both.
+
 There is no device material in this repo. The firmware only works with the
 Bluetooth address and the keys of a real Plus+, and you have to read those
 from a device you own and put them in yourself. It won't compile without them.
