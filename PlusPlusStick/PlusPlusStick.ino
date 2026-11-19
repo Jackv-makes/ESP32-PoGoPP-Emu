@@ -69,7 +69,7 @@ static constexpr uint32_t RUNTIME_BUTTON_PRESTATE_SEND_GAP_MS = 15;
 static constexpr uint32_t POST_AUTH_READY_18_DELAY_MS = 20300;
 static constexpr uint32_t PHYSICAL_RESET_BUTTON_RAW_PIN = PP_BOARD_PIN_BTN_SIDE;  // Stick S3 side button, hold 5 s
 static constexpr uint32_t PHYSICAL_RESET_BUTTON_HOLD_MS = 5000;
-static constexpr uint32_t DISCONNECTED_SLEEP_TIMEOUT_MS = 15UL * 60UL * 1000UL;
+static constexpr uint32_t DISCONNECTED_SLEEP_TIMEOUT_MS = 5UL * 60UL * 1000UL;
 DebugBLEService serviceA("addc3e26-4aa5-4c1a-8a6a-735db4e01c6c");
 DebugBLEService batteryService(0x180F);
 DebugBLEService serviceB("2bbe7f7c-7304-4466-8407-8eaf89f8ce45");

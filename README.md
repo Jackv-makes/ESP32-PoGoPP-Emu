@@ -31,7 +31,9 @@ from a device you own and put them in yourself. It won't compile without them.
   counters for caught, fled and spins
 - A menu for press speed, alerts, brightness, hiding the device and wiping
   the pairing
-- Deep sleep after 15 minutes without a connection
+- The screen switches off after a minute without a press, and any press
+  turns it back on
+- Deep sleep after 5 minutes without a connection
 
 ## Disclaimer
 
@@ -113,8 +115,9 @@ arduino-cli lib install "NimBLE-Arduino@2.5.2"
 ./build.sh
 ```
 
-`build.sh` compiles for `m5stack:esp32:m5stack_sticks3:PSRAM=opi` into
-`build/`. It also passes a few NimBLE settings as compiler flags, and the
+`build.sh` compiles for `m5stack:esp32:m5stack_sticks3:PSRAM=opi,CPUFreq=80`
+into `build/`. The 80 MHz CPU clock is there to save battery. It is the
+lowest clock Bluetooth works at. It also passes a few NimBLE settings as compiler flags, and the
 firmware needs them, so if you build some other way, copy them from the
 script. [DESIGN.md](DESIGN.md) explains what they are for.
 

@@ -101,8 +101,12 @@ static uint32_t gLastDraw = 0;
 static char gLastState[24] = "";
 static int gLastBattery = -1;
 static uint32_t gLastInputAt = 0;
-static bool gDisplayDimmed = false;
-static constexpr uint32_t kDimAfterMs = 60UL * 1000UL;
+static bool gDisplayOff = false;
+static uint32_t gDisplayOffAt = 0;
+static constexpr uint32_t kScreenOffAfterMs = 60UL * 1000UL;
+// ST7789: SLPOUT within 120 ms of SLPIN can be ignored, and the panel wants
+// 120 ms after SLPOUT before it takes pixels.
+static constexpr uint32_t kPanelSleepGapMs = 120;
 
 static uint16_t gCountCaught = 0;
 static uint16_t gCountFled = 0;
@@ -247,7 +251,7 @@ static const char* menuValue(uint8_t item)
 
 static void applyBrightness()
 {
-  M5.Display.setBrightness(gDisplayDimmed ? 10 : kBrightLevels[gBright]);
+  M5.Display.setBrightness(gDisplayOff ? 0 : kBrightLevels[gBright]);
 }
 
 static void openMenu()
@@ -632,7 +636,7 @@ void ppBoardTick(const BoardRefs& refs)
     }
     gWasConnected = connected;
     static uint32_t lastClock = 0;
-    if (connected && gScreen == SCREEN_STATUS && !gDirty && !gDisplayDimmed && (millis() - lastClock) >= 1000) {
+    if (connected && gScreen == SCREEN_STATUS && !gDirty && !gDisplayOff && (millis() - lastClock) >= 1000) {
       lastClock = millis();
       drawLinkClock(refs);  // repaint only the clock cell, no full redraw
     }
@@ -701,11 +705,24 @@ void ppBoardTick(const BoardRefs& refs)
       break;
   }
 
-  // Dim the backlight after a minute of no input; any press brings it back.
-  bool wantDim = (now - gLastInputAt) >= kDimAfterMs;
-  if (wantDim != gDisplayDimmed) {
-    gDisplayDimmed = wantDim;
-    applyBrightness();
+  // Switch the screen off after a minute of no input; any press or a warning
+  // flash turns it back on. The buttons keep working while it is off.
+  bool wantOff = (now - gLastInputAt) >= kScreenOffAfterMs && now >= gFlashUntil;
+  if (wantOff != gDisplayOff) {
+    gDisplayOff = wantOff;
+    if (wantOff) {
+      applyBrightness();
+      M5.Display.sleep();
+      gDisplayOffAt = now;
+    } else {
+      uint32_t since = now - gDisplayOffAt;
+      if (since < kPanelSleepGapMs) delay(kPanelSleepGapMs - since);
+      M5.Display.wakeup();
+      delay(kPanelSleepGapMs);
+      applyBrightness();
+      gDirty = true;
+      now = millis();
+    }
   }
 
   // Clear a stale note after a few seconds.
@@ -741,7 +758,7 @@ void ppBoardTick(const BoardRefs& refs)
     }
   }
 
-  if (gDirty && (now - gLastDraw) > 120) {
+  if (gDirty && !gDisplayOff && (now - gLastDraw) > 120) {
     switch (gScreen) {
       case SCREEN_MENU: drawMenu(); break;
       case SCREEN_CONFIRM_RESET: drawConfirmReset(); break;
